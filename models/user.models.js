@@ -58,6 +58,16 @@ User.findBy = async (data, field, attach_additional_data = false) => {
     }
 };
 
+User.forget = async (req, res) => {
+    let forg = await sql.query('SELECT * FROM users WHERE email =?', [req.body.email]);
+    if(forg.lenght){
+        return forg[0];
+    }
+    else {
+        throw new NotFoundError("Email does not exit");
+    }
+};
+
 User.login = async (value) => {
     let row = await sql.query(`SELECT * FROM users WHERE phone = ?`, [value, value]);
     if( row.length ) {

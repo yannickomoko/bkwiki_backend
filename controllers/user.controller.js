@@ -44,12 +44,23 @@ exports.login = async (req, res) => {
         const user = await User.login(req.body.phone);
         if (user) {
             const validPass = await bcrypt.compare(req.body.password, user.hasPassword);
-            if (!validPass) return res.status(400).send({message:"Mobile/Email or Password is wrong"});
-
-            // Create and assign token
-            const token = jwt.sign({id: user.id, user_type_id: user.user_type_id}, config.TOKEN_SECRET);
-            res.header("auth-token", token).send({"token": token});
-            // res.send("Logged IN");
+            if (validPass) {
+                user.password = undefined;
+                const jsontoken = sign({ result: user }, config.TOKEN_SECRET, {
+                    expiresIn: "1h"
+                  });
+                  return res.json({
+                    success: 1,
+                    message: "login successfully",
+                    token: jsontoken
+                  });
+            }
+            else {
+                return res.json({
+                  success: 0,
+                  data: "Invalid email or password"
+                });
+              } 
         }
     }
     catch (err) {
@@ -77,4 +88,8 @@ exports.authuseronly = (req, res) => {
 // Admin users only
 exports.adminonly = (req, res) => {
     res.send("Success. Hellow Admin, this route is only for you");
+};
+
+exports.forgetpassword = (req, res) => {
+    
 };

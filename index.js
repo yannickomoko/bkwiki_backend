@@ -21,7 +21,7 @@ app.use(function(req, res, next){
 });
 
 // Import Routes
-app.use('/users', routePost);
+app.use('/bkwiki', routePost);
 
  
 app.listen(port, () => console.log(`Server starting in port ${port}!`));
